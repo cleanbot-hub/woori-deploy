@@ -1,0 +1,125 @@
+[
+  {
+    "id": "KotiTRMLNPfQSB4qvaKn",
+    "caseId": "S-20251026-5167",
+    "surgeryDept": "NS",
+    "surgeryName": "테스트 입니다",
+    "createdBy": {
+      "uid": "CjXMpb7qTmYJ1Z7TpJOsGX7jy4Q2",
+      "name": "개발자"
+    },
+    "note": "테스트",
+    "createdAt": {
+      "_seconds": 1761451394,
+      "_nanoseconds": 501000000
+    },
+    "timestamps": {
+      "reopenedAt": {
+        "_seconds": 1761456353,
+        "_nanoseconds": 672000000
+      },
+      "startedAt": {
+        "_seconds": 1761456355,
+        "_nanoseconds": 395000000
+      },
+      "doneAt": {
+        "_seconds": 1761456356,
+        "_nanoseconds": 525000000
+      }
+    },
+    "status": "done",
+    "updatedAt": {
+      "_seconds": 1761456356,
+      "_nanoseconds": 525000000
+    }
+  },
+  {
+    "id": "ZlWVD6QF5uADiQ06HTPs",
+    "caseId": "S-20251027-0833",
+    "surgeryDept": "NS",
+    "surgeryName": "테스트",
+    "createdBy": {
+      "uid": "CjXMpb7qTmYJ1Z7TpJOsGX7jy4Q2",
+      "name": "개발자"
+    },
+    "createdAt": {
+      "_seconds": 1761563297,
+      "_nanoseconds": 842000000
+    },
+    "timestamps": {
+      "startedAt": {
+        "_seconds": 1761563300,
+        "_nanoseconds": 994000000
+      }
+    },
+    "status": "operating",
+    "updatedAt": {
+      "_seconds": 1761563300,
+      "_nanoseconds": 994000000
+    }
+  },
+  {
+    "id": "v1Gcx4r0nBcYKBPyypk5",
+    "caseId": "S-20251026-5839",
+    "surgeryDept": "NS",
+    "surgeryName": "para spinal",
+    "createdBy": {
+      "uid": "CjXMpb7qTmYJ1Z7TpJOsGX7jy4Q2",
+      "name": "개발자"
+    },
+    "note": "H-vac 주의",
+    "createdAt": {
+      "_seconds": 1761451268,
+      "_nanoseconds": 73000000
+    },
+    "timestamps": {
+      "startedAt": {
+        "_seconds": 1761451272,
+        "_nanoseconds": 546000000
+      },
+      "doneAt": {
+        "_seconds": 1761456360,
+        "_nanoseconds": 98000000
+      }
+    },
+    "status": "done",
+    "updatedAt": {
+      "_seconds": 1761456360,
+      "_nanoseconds": 98000000
+    }
+  },
+  {
+    "id": "wMC69euTlX72VssBuFAQ",
+    "caseId": "S-20251026-6713",
+    "surgeryDept": "NS",
+    "surgeryName": "pvp",
+    "createdBy": {
+      "uid": "CjXMpb7qTmYJ1Z7TpJOsGX7jy4Q2",
+      "name": "개발자"
+    },
+    "createdAt": {
+      "_seconds": 1761451215,
+      "_nanoseconds": 750000000
+    },
+    "note": "O2 30분",
+    "timestamps": {
+      "editedAt": {
+        "_seconds": 1761451236,
+        "_nanoseconds": 908000000
+      },
+      "startedAt": {
+        "_seconds": 1761451273,
+        "_nanoseconds": 373000000
+      },
+      "doneAt": {
+        "_seconds": 1761456362,
+        "_nanoseconds": 728000000
+      }
+    },
+    "status": "done",
+    "updatedAt": {
+      "_seconds": 1761456362,
+      "_nanoseconds": 728000000
+    }
+  }
+]

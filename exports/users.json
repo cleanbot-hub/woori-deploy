@@ -1,0 +1,47 @@
+[
+  {
+    "id": "0M2pLU5Vw4RmgZJbbUHUGGbl5Pe2",
+    "nickname": "sygn008",
+    "fcmToken": "d8q9zpb15ZeKTf6vCsyzBx:APA91bEqrd8ZBhqQyWlQq9mVKLqotHMS52Ip94W6H4mXtLFkThbNyRLc832sMOIdABPiVqcMjZwEoZftiAcoIN7lJY9TnCk1KkScyS5qICy4ZjhdUgH1sOw",
+    "avatarUrl": "https://res.cloudinary.com/dnx6obtjb/image/upload/v1762309661/freetalk/avatars/frektylcd7wjofesoxtu.jpg",
+    "updatedAt": {
+      "_seconds": 1762309662,
+      "_nanoseconds": 558000000
+    }
+  },
+  {
+    "id": "8YyaZtfVX2ZVahtJRyBnz69T0br2",
+    "nickname": "7a",
+    "fcmToken": "ckNQ3vopesuG7BWwSHaXN4:APA91bGj4fMg39l_16_cvG5xAFEeUnflK2P-XxzhgI4L_xypBbH9Ec6ihlroVzpByDowGxsYqSYj2Wkj6_oR-jo6aFbYQB3VOwIzuycnO8wSi_WKmB-cl4k"
+  },
+  {
+    "id": "CjXMpb7qTmYJ1Z7TpJOsGX7jy4Q2",
+    "nickname": "개발자",
+    "avatarUrl": "https://res.cloudinary.com/dnx6obtjb/image/upload/v1762262244/freetalk/avatars/ykgg40x5qb492zs73mh9.png",
+    "updatedAt": {
+      "_seconds": 1762262245,
+      "_nanoseconds": 454000000
+    },
+    "fcmToken": "er_bD_C3ThQoLta1Bp-rsi:APA91bEIlhwz5kTsc1bOV6xOZAKeNpZ9Bk_CLQc43zr2yXIxTqssxKskNvbXaje56XNIIKoKow1WJnU7zD2GrdOhJDcq7-2fr0Xz4Mr9Mmbs8x048vf7-Zg"
+  },
+  {
+    "id": "KnHOpPIFMNgDHEaLIS8whhzXlps2",
+    "createdAt": {
+      "_seconds": 1760956640,
+      "_nanoseconds": 583000000
+    },
+    "nickname": "이상준"
+  },
+  {
+    "id": "TjQiCaRYntZltSnYSGU6McpjVV43",
+    "nickname": "ssss"
+  },
+  {
+    "id": "k7rdBGeLJAMqoVrz8bE0fxhyNJI3",
+    "nickname": "제프"
+  },
+  {
+    "id": "qS5m3bCbw7TfbMmLYGCt2gPcIZ53",
+    "nickname": "test"
+  }
+]

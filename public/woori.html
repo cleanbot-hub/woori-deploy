@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>우리병원 업무 등록</title>
+  <link rel="icon" href="/img/icon1101.png"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            accent: { DEFAULT: '#7c3aed', light: '#8b5cf6' },
+            panel: '#121831',
+            bg: '#0b1020',
+            border: '#1f2745',
+          },
+          boxShadow: { soft: '0 8px 24px rgba(0,0,0,0.3)' }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-bg text-slate-100 min-h-screen flex flex-col">
+  <div class="container max-w-5xl mx-auto px-4 py-5 flex-1">
+
+    <!-- 🔹 상단바 -->
+    <header class="flex flex-wrap justify-between items-center gap-3 mb-5">
+      <div class="flex items-center gap-3">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+          <path d="M12 3l8 4.5v9L12 21 4 16.5v-9L12 3z" stroke="#8b5cf6" stroke-width="1.4"/>
+        </svg>
+        <div>
+          <div class="text-lg font-bold">우리병원 업무 등록</div>
+          <p class="text-xs text-slate-400">이송·수술·기타 업무를 탭에서 전환해 등록하세요</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <span id="me-pill" class="text-xs text-slate-400 border border-slate-700 px-3 py-1 rounded-full">로그인 확인 중…</span>
+        <button id="main-page" class="px-3 py-2 rounded-md bg-slate-800 border border-slate-700 text-sm hover:bg-slate-700">메인</button>
+        <button id="btn-dashboard" class="px-3 py-2 rounded-md bg-slate-800 border border-slate-700 text-sm hover:bg-slate-700">대시보드</button>
+        <button id="btn-logout" class="px-3 py-2 rounded-md bg-transparent border border-slate-700 text-sm hover:bg-slate-800">로그아웃</button>
+      </div>
+    </header>
+
+    <!-- 🔹 탭 -->
+    <section class="bg-panel border border-slate-700 rounded-2xl shadow-soft p-5">
+      <div class="flex flex-col md:flex-row gap-2 mb-4">
+        <button class="tab-btn flex-1 py-2 rounded-lg text-center border border-slate-700 bg-gradient-to-b from-accent-light to-accent font-semibold" data-tab="transport">🚑 이송</button>
+        <button class="tab-btn flex-1 py-2 rounded-lg text-center border border-slate-700 bg-slate-800 hover:bg-slate-700" data-tab="surgery">🩺 수술</button>
+        <button class="tab-btn flex-1 py-2 rounded-lg text-center border border-slate-700 bg-slate-800 hover:bg-slate-700" data-tab="misc">📋 기타</button>
+      </div>
+
+      <!-- 🚑 이송업무 탭 -->
+      <div id="tab-transport" class="tab-content block space-y-3">
+        <input id="t-dept" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="목적지/부서 (예: 9층 영상의학과)">
+        <div class="flex gap-2 flex-wrap">
+          <select id="t-mob" class="flex-1 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+            <option value="bed">이동침대</option>
+            <option value="wheelchair">휠체어</option>
+            <option value="walk">도보</option>
+          </select>
+          <select id="t-pri" class="flex-1 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+            <option value="Routine">보통</option>
+            <option value="STAT">긴급</option>
+          </select>
+        </div>
+        <textarea id="t-note" rows="3" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="메모 (선택)"></textarea>
+        <div class="flex justify-end">
+          <button id="t-save" class="px-4 py-2 rounded-lg bg-gradient-to-b from-accent-light to-accent font-semibold shadow-soft hover:opacity-90">등록</button>
+        </div>
+      </div>
+      <!-- 🩺 수술등록 탭 -->
+      <div id="tab-surgery" class="tab-content hidden space-y-3">
+        <input id="s-id" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-slate-400" disabled placeholder="케이스 ID (자동생성)">
+        <div class="flex gap-2 flex-wrap">
+          <select id="s-dept" class="flex-1 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+            <option value="NS">NS (신경외과)</option>
+            <option value="OS">OS (정형외과)</option>
+            <option value="GS">GS (외과)</option>
+          </select>
+          <input id="s-name" class="flex-1 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="수술명 (예: 척추 고정술)">
+        </div>
+        <textarea id="s-note" rows="3" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="메모 (선택, 개인정보 금지)"></textarea>
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400 border border-slate-700 rounded-full px-3 py-1">초기 상태: 수술대기</span>
+          <button id="s-save" class="px-4 py-2 rounded-lg bg-gradient-to-b from-accent-light to-accent font-semibold shadow-soft hover:opacity-90">등록</button>
+        </div>
+
+        <div class="border-t border-slate-700 pt-3 mt-3 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-400">오늘 등록된 수술 (최근 5)</span>
+            <div class="flex gap-2 items-center">
+              <span id="s-count" class="text-xs border border-slate-700 px-2 py-1 rounded-full">0건</span>
+              <button id="s-reload" class="px-3 py-1 text-sm rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700">새로고침</button>
+            </div>
+          </div>
+          <div id="s-list" class="space-y-2"><div class="text-slate-400 text-sm">불러오는 중…</div></div>
+        </div>
+      </div>
+
+      <!-- 📋 기타업무 탭 -->
+      <div id="tab-misc" class="tab-content hidden space-y-3">
+        <input id="m-title" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="업무 제목 (예: 물품 전달)">
+        <input id="m-dept" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="관련 부서/장소 (선택)">
+        <select id="m-pri" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+          <option value="Routine">보통</option>
+          <option value="STAT">긴급</option>
+        </select>
+        <textarea id="m-note" rows="3" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="상세 메모 (선택)"></textarea>
+        <div class="flex justify-end">
+          <button id="misc-save" class="px-4 py-2 rounded-lg bg-gradient-to-b from-accent-light to-accent font-semibold shadow-soft hover:opacity-90">등록</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🧾 나의 업무 -->
+    <section class="bg-panel border border-slate-700 rounded-2xl shadow-soft p-5 mt-6">
+      <h2 class="text-lg font-semibold mb-1">나의 업무</h2>
+      <p class="text-xs text-slate-400 mb-3">오늘 등록된 본인 업무만 표시됩니다.</p>
+      <div id="my-list" class="space-y-2"><div class="text-slate-400 text-sm">불러오는 중…</div></div>
+    </section>
+  </div>
+
+  <!-- =========================
+       모달 구성 (Tailwind 스타일)
+  ========================== -->
+
+  <!-- 기타 요청 모달 -->
+  <div id="misc-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+    <div class="bg-panel border border-slate-700 rounded-2xl shadow-soft p-5 w-full max-w-lg space-y-3">
+      <h2 class="text-lg font-semibold mb-2">기타 요청 등록</h2>
+      <input id="mTitle" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="업무 제목">
+      <input id="mDept" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="관련 부서/장소 (선택)">
+      <select id="mPri" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+        <option value="Routine">보통</option>
+        <option value="STAT">긴급</option>
+      </select>
+      <textarea id="mNote" rows="3" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="상세 메모 (선택)"></textarea>
+      <div class="flex justify-end gap-2">
+        <button id="misc-cancel" class="px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-800">취소</button>
+        <button id="misc-save" class="px-4 py-2 rounded-lg bg-gradient-to-b from-accent-light to-accent font-semibold">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 수술 편집 모달 -->
+  <div id="s-edit-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+    <div class="bg-panel border border-slate-700 rounded-2xl shadow-soft p-5 w-full max-w-lg space-y-3">
+      <h2 class="text-lg font-semibold mb-2">수술 정보 수정</h2>
+      <input id="se-id" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-slate-400" disabled>
+      <select id="se-dept" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+        <option value="NS">NS</option>
+        <option value="OS">OS</option>
+      </select>
+      <input id="se-name" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="수술명">
+      <textarea id="se-note" rows="3" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="메모"></textarea>
+      <select id="se-status" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+        <option value="waiting">수술대기</option>
+        <option value="operating">수술중</option>
+        <option value="done">완료</option>
+      </select>
+      <div id="se-times" class="text-xs text-slate-400"></div>
+      <div class="flex justify-end gap-2">
+        <button id="s-edit-cancel" class="px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-800">취소</button>
+        <button id="s-edit-save" class="px-4 py-2 rounded-lg bg-gradient-to-b from-accent-light to-accent font-semibold">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 업무 편집 모달 -->
+  <div id="edit-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+    <div class="bg-panel border border-slate-700 rounded-2xl shadow-soft p-5 w-full max-w-lg space-y-3">
+      <h2 class="text-lg font-semibold mb-2">업무 수정</h2>
+      <select id="e-status" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+        <option value="open">대기</option>
+        <option value="in_progress">진행중</option>
+        <option value="done">완료</option>
+      </select>
+      <select id="e-pri" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+        <option value="Routine">보통</option>
+        <option value="STAT">긴급</option>
+      </select>
+      <textarea id="e-note" rows="3" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="메모 (선택)"></textarea>
+
+      <!-- 이송 / 기타 구분 -->
+      <div id="edit-transport" class="space-y-2">
+        <input id="e-room" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="출발지/병실 (선택)">
+        <input id="e-patient" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="환자명 (선택)">
+        <input id="e-dept" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="도착 부서 (선택)">
+        <select id="e-mob" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2">
+          <option value="bed">이동침대</option>
+          <option value="wheelchair">휠체어</option>
+          <option value="walk">도보</option>
+        </select>
+      </div>
+
+      <div id="edit-misc" class="space-y-2 hidden">
+        <input id="e-title" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="업무 제목">
+        <input id="e-dept-misc" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2" placeholder="관련 부서/장소">
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button id="edit-cancel" class="px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-800">취소</button>
+        <button id="edit-save" class="px-4 py-2 rounded-lg bg-gradient-to-b from-accent-light to-accent font-semibold">저장</button>
+      </div>
+    </div>
+  </div>
+  <!-- =========================
+       💬 채팅 Drawer
+  ========================== -->
+  <div id="chat-dim" class="fixed inset-0 bg-black/60 hidden z-40"></div>
+
+  <aside id="chat-drawer"
+         class="fixed top-0 right-0 h-full w-full sm:w-[420px] lg:w-[640px] bg-panel border-l border-slate-700 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col"
+         aria-hidden="true">
+    <div class="flex justify-between items-center p-3 border-b border-slate-700 bg-slate-800">
+      <strong>실시간 채팅</strong>
+      <div class="flex gap-2">
+        <button id="chat-popout" class="px-3 py-1 text-sm rounded-md border border-slate-700 hover:bg-slate-700">새창</button>
+        <button id="chat-close" class="px-3 py-1 text-sm rounded-md bg-accent hover:bg-accent-light text-white">닫기</button>
+      </div>
+    </div>
+    <iframe id="chat-frame" title="Chat" class="flex-1 w-full bg-slate-900 border-0"></iframe>
+  </aside>
+
+  <!-- 💬 플로팅 채팅 버튼 -->
+  <button id="chat-fab"
+          class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-b from-accent-light to-accent text-white text-2xl font-bold shadow-lg hover:scale-105 transition-transform z-50"
+          aria-label="채팅 열기">💬</button>
+
+  <!-- =========================
+       📜 스크립트 연결
+  ========================== -->
+  <script type="module" src="/js/woori.js"></script>
+
+  <script>
+    // 🔹 탭 전환 (Tailwind 버전)
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabs = document.querySelectorAll(".tab-btn");
+      const contents = document.querySelectorAll(".tab-content");
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          tabs.forEach(t => {
+            t.classList.remove("bg-gradient-to-b", "from-accent-light", "to-accent", "font-semibold");
+            t.classList.add("bg-slate-800");
+          });
+          contents.forEach(c => c.classList.add("hidden"));
+          tab.classList.remove("bg-slate-800");
+          tab.classList.add("bg-gradient-to-b", "from-accent-light", "to-accent", "font-semibold");
+          document.getElementById(`tab-${tab.dataset.tab}`).classList.remove("hidden");
+        });
+      });
+    });
+  </script>
+</body>
+</html>

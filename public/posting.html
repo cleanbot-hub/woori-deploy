@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>새 글 작성 · Freetalk</title>
+<link rel="icon" type="image/png" href="/img/icon1101.png">
+<meta name="theme-color" content="#0b1020"/>
+<style>
+:root{
+  --bg:#0b1020;--panel:#121831;--ink:#e5e7eb;--muted:#9aa3b2;--bd:#1f2745;
+  --accent:#7c3aed;--accent2:#8b5cf6;--radius:16px;
+}
+body{
+  background:linear-gradient(180deg,#0b1020,#0f1530);
+  color:var(--ink);font:15px/1.6 "Inter",system-ui,Malgun Gothic;
+  margin:0;padding:20px;display:flex;justify-content:center;
+}
+main{
+  width:min(640px,96vw);background:var(--panel);border:1px solid var(--bd);
+  border-radius:var(--radius);padding:20px;
+  box-shadow:0 12px 30px rgba(8,12,30,.4);
+}
+h1{font-size:18px;margin:0 0 12px}
+label{font-weight:600;margin-top:10px;display:block}
+select,input,textarea{
+  width:100%;padding:10px;border-radius:10px;border:1px solid var(--bd);
+  background:#0f1733;color:var(--ink);font-size:14px;
+}
+textarea{min-height:140px;resize:vertical}
+.btn{
+  padding:10px 16px;border-radius:10px;border:0;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:600;
+}
+#preview img{
+  width:100%;border-radius:12px;margin-top:8px;object-fit:contain;max-height:320px;
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>새 글 작성</h1>
+
+  <label>게시판 선택</label>
+  <select id="select-board"></select>
+
+  <label>카테고리</label>
+  <select id="select-cat"></select>
+
+  <label>제목</label>
+  <input id="input-title" placeholder="제목을 입력하세요"/>
+
+  <label>내용</label>
+  <textarea id="input-body" placeholder="내용을 입력하세요"></textarea>
+
+  <label>이미지 추가</label>
+  <button id="btn-photo" class="btn" type="button">📷 업로드</button>
+  <input id="fallback-file" type="file" accept="image/*" multiple hidden/>
+  <div id="preview"></div>
+
+  <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end">
+    <button id="btn-cancel" class="btn" style="background:#1e293b">취소</button>
+    <button id="btn-save" class="btn">저장</button>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, getDocs, doc, getDoc,
+  query, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+const cfg={apiKey:"AIzaSyACn_-2BLztKYmBKXtrKNtMsC-2Y238oug",
+authDomain:"woori-1ecf5.firebaseapp.com",projectId:"woori-1ecf5",
+storageBucket:"woori-1ecf5.firebasestorage.app",messagingSenderId:"1073097361525",
+appId:"1:1073097361525:web:3218ced6a040aaaf4d503c"};
+
+const app=initializeApp(cfg);
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+const $=id=>document.getElementById(id);
+const boardSel=$("select-board");
+const catSel=$("select-cat");
+const titleEl=$("input-title");
+const bodyEl=$("input-body");
+const imgBtn=$("btn-photo");
+const preview=$("preview");
+const fallback=$("fallback-file");
+const saveBtn=$("btn-save");
+const cancelBtn=$("btn-cancel");
+
+let boards=[],draftImages=[],myNick="사용자",me=null;
+
+/* =============== 로그인 확인 =============== */
+onAuthStateChanged(auth, async(u)=>{
+  me=u;
+  if(!u){ alert("로그인이 필요합니다."); location.href="/login.html"; return; }
+  const us=await getDoc(doc(db,"users",u.uid));
+  myNick=us.data()?.nickname || u.displayName || "사용자";
+  await loadBoards();
+});
+
+/* =============== 게시판 로드 =============== */
+async function loadBoards(){
+  const snap=await getDocs(query(collection(db,"boards"),orderBy("order","asc")));
+  boardSel.innerHTML='<option value="">게시판 선택</option>';
+  snap.forEach(d=>{
+    const x=d.data();
+    boards.push({id:d.id,...x});
+    const opt=document.createElement("option");
+    opt.value=d.id; // ✅ 문서 ID
+    opt.textContent=x.name||d.id;
+    boardSel.appendChild(opt);
+  });
+}
+
+boardSel.onchange=()=>{
+  const b=boards.find(v=>v.id===boardSel.value);
+  catSel.innerHTML="";
+  if(!b){catSel.innerHTML="<option>카테고리 없음</option>";return;}
+  (b.categories||[]).forEach(c=>{
+    const o=document.createElement("option");
+    o.value=c;o.textContent=c;
+    catSel.appendChild(o);
+  });
+};
+
+/* =============== Cloudinary 업로드 =============== */
+const CLOUD_NAME="dnx6obtjb",UPLOAD_PRESET="sj_exe";
+function addImage(info){
+  draftImages.push({pid:info.public_id,url:info.secure_url,w:info.width,h:info.height});
+  renderPreview();
+}
+let widget=null;
+imgBtn.onclick=()=>{
+  if(!window.cloudinary || !window.cloudinary.createUploadWidget){fallback.click();return;}
+  if(!widget){
+    widget=window.cloudinary.createUploadWidget({
+      cloudName:CLOUD_NAME,uploadPreset:UPLOAD_PRESET,
+      sources:["local","camera"],multiple:true,maxFiles:5,
+      clientAllowedFormats:["jpg","jpeg","png","webp"],folder:"freetalk/posts"
+    },(err,res)=>{
+      if(err)console.error(err);
+      if(res?.event==="success")addImage(res.info);
+    });
+  }
+  widget.open();
+};
+
+fallback.onchange=async e=>{
+  const files=Array.from(e.target.files||[]);
+  for(const f of files.slice(0,5-draftImages.length)){
+    const fd=new FormData();
+    fd.append("upload_preset",UPLOAD_PRESET);
+    fd.append("file",f);
+    const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:"POST",body:fd});
+    const j=await r.json();
+    if(j.secure_url)addImage(j);
+  }
+  e.target.value="";
+};
+
+function renderPreview(){
+  preview.innerHTML="";
+  draftImages.forEach((img,idx)=>{
+    const box=document.createElement("div");
+    box.innerHTML=`<img src="${img.url}"/><button class="btn small" style="margin-top:4px;background:#334155">삭제</button>`;
+    box.querySelector("button").onclick=()=>{draftImages.splice(idx,1);renderPreview();};
+    preview.appendChild(box);
+  });
+}
+
+/* =============== 저장 =============== */
+saveBtn.onclick=async()=>{
+  try{
+    if(!auth.currentUser)return alert("로그인이 필요합니다.");
+    const boardId=boardSel.value,category=catSel.value,title=titleEl.value.trim(),body=bodyEl.value.trim();
+    if(!boardId||!category)return alert("게시판과 카테고리를 선택하세요.");
+    if(!title||!body)return alert("제목과 내용을 입력하세요.");
+
+    const data={
+      title,body,images:draftImages,boardId,category,
+      authorUid:me.uid,authorName:myNick,createdAt:serverTimestamp()
+    };
+    await addDoc(collection(db,"communityPosts"),data);
+    alert("게시글이 등록되었습니다!");
+    location.href="/index.html";
+  }catch(e){
+    console.error("err",e);
+    alert("게시글 저장 중 오류: "+e.message);
+  }
+};
+
+cancelBtn.onclick=()=>location.href="/index.html";
+</script>
+<script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
+</body>
+</html>
